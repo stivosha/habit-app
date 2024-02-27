@@ -6,11 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.stivosha.habit_app.screen.HabitListScreen
+import androidx.navigation.compose.rememberNavController
+import com.stivosha.habit_app.presentation.composable.screen.HabitsScreen
+import com.stivosha.habit_app.presentation.navigation.NavGraph
 import com.stivosha.habit_app.ui.theme.HabitappTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +17,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HabitappTheme {
-                HabitListScreen()
+                val navController = rememberNavController()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    NavGraph(navController)
+                }
             }
         }
     }

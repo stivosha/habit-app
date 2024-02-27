@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">habit-app</string>
+    <string name="add_habit_title_button">Добавить</string>
+    <string name="add_habit_title_name_description">Название и описание привычки</string>
+    <string name="add_habit_title_priority">Приоритет привычки</string>
+    <string name="add_habit_title_type">Тип привычки</string>
+    <string name="add_habit_title_color">Цвет привычки</string>
+    <string name="add_habit_title_enter_field_error">Заполните поле</string>
+    <string name="add_habit_title_periodicity">Переодичность привычки</string>
+    <string name="add_habit_title_name">Название</string>
+    <string name="add_habit_title_description">Описание</string>
+    <string name="add_habit_high_priority">Высокий</string>
+    <string name="add_habit_medium_priority">Средний</string>
+    <string name="add_habit_low_priority">Низкий</string>
+    <string name="add_habit_good_type">Хорошая</string>
+    <string name="add_habit_bad_type">Плохая</string>
 </resources>
