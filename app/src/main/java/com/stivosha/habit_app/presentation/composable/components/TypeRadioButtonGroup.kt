@@ -1,4 +1,4 @@
-package com.stivosha.habit_app.presentation.composable
+package com.stivosha.habit_app.presentation.composable.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.stivosha.habit_app.R
 import com.stivosha.habit_app.presentation.model.Habit
-import com.stivosha.habit_app.presentation.model.Type
 import com.stivosha.habit_app.presentation.model.Type.BAD
 import com.stivosha.habit_app.presentation.model.Type.GOOD
 

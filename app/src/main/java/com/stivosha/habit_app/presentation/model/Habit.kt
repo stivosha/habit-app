@@ -4,9 +4,11 @@ import android.os.Parcelable
 import com.stivosha.habit_app.presentation.model.Priority.LOW
 import com.stivosha.habit_app.presentation.model.Type.GOOD
 import kotlinx.parcelize.Parcelize
+import kotlin.random.Random
 
 @Parcelize
 data class Habit(
+    val id: Long = Random.nextLong(),
     val name: String = "",
     val description: String = "",
     val times: Int? = null,

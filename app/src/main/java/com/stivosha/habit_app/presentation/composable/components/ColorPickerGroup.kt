@@ -1,4 +1,4 @@
-package com.stivosha.habit_app.presentation.composable
+package com.stivosha.habit_app.presentation.composable.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
@@ -28,12 +29,13 @@ fun ColorPickerGroup(
         0xFF00FF00,
         0xFF0000FF
     )
-    val active = remember { mutableLongStateOf(colors.first()) }
+    val active = remember { mutableLongStateOf(habit.value.color) }
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
+        val primary = MaterialTheme.colorScheme.primary
         colors.forEach { hex ->
-            val borderColor = if (hex == active.longValue) Color.White else Color.Transparent
+            val borderColor = if (hex == active.longValue) primary else Color.Transparent
             Box(
                 modifier = Modifier
                     .size(16.dp)

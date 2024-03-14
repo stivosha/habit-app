@@ -4,40 +4,41 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.core.os.bundleOf
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.stivosha.habit_app.presentation.HabitViewModel
 import com.stivosha.habit_app.presentation.composable.screen.AddEditHabitScreen
 import com.stivosha.habit_app.presentation.composable.screen.HabitsScreen
-import com.stivosha.habit_app.presentation.composable.util.rememberMutableStateListOf
 import com.stivosha.habit_app.presentation.model.Habit
 
 @Composable
-fun NavGraph(navController: NavHostController) {
-    val items = rememberMutableStateListOf<Habit>()
+fun MyApp(navController: NavHostController) {
+    val habitViewModel: HabitViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = NavRoute.HabitsList.path,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }
     ) {
-        habitScreen(items, navController, this)
-        addHabitScreen(items, navController, this)
-        editHabitScreen(items, navController, this)
+        habitScreen(habitViewModel, navController, this)
+        addHabitScreen(habitViewModel, navController, this)
+        editHabitScreen(habitViewModel, navController, this)
     }
 }
 
 private fun habitScreen(
-    items: SnapshotStateList<Habit>,
+    habitViewModel: HabitViewModel,
     navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
     navGraphBuilder.composable(route = NavRoute.HabitsList.path) {
         HabitsScreen(
-            items = items.toList(),
+            viewModel = habitViewModel,
             onHabitClicked = {
                 navController.navigate(NavRoute.EditHabit.createRoute(it))
             },
@@ -49,14 +50,14 @@ private fun habitScreen(
 }
 
 private fun addHabitScreen(
-    items: SnapshotStateList<Habit>,
+    habitViewModel: HabitViewModel,
     navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
     navGraphBuilder.composable(route = NavRoute.AddHabit.path) {
         AddEditHabitScreen(
             addHabit = {
-                items.add(it)
+                habitViewModel.addHabit(it)
                 navController.popBackStack()
             }
         )
@@ -64,16 +65,19 @@ private fun addHabitScreen(
 }
 
 private fun editHabitScreen(
-    items: SnapshotStateList<Habit>,
+    habitViewModel: HabitViewModel,
     navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
-    navGraphBuilder.composable(route = NavRoute.EditHabit.path) {
-        val habit = NavRoute.EditHabit.fromArguments(it.arguments)
+    navGraphBuilder.composable(
+        route = NavRoute.EditHabit.path,
+        arguments = listOf(navArgument("habitId") { type = NavType.LongType })
+    ) { backStackEntry ->
+        val habitId = backStackEntry.arguments?.getLong("habitId")
         AddEditHabitScreen(
-            habitExtras = habit,
+            habitExtras = habitViewModel.getById(habitId),
             addHabit = {
-                items.add(it)
+                habitViewModel.editHabit(it)
                 navController.popBackStack()
             }
         )

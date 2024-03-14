@@ -1,4 +1,4 @@
-package com.stivosha.habit_app.presentation.composable
+package com.stivosha.habit_app.presentation.composable.components
 
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api

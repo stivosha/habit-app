@@ -8,8 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.stivosha.habit_app.presentation.composable.screen.HabitsScreen
-import com.stivosha.habit_app.presentation.navigation.NavGraph
+import com.stivosha.habit_app.presentation.navigation.MyApp
 import com.stivosha.habit_app.ui.theme.HabitappTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavGraph(navController)
+                    MyApp(navController)
                 }
             }
         }
