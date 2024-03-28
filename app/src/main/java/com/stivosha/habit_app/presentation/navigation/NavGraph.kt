@@ -3,7 +3,6 @@ package com.stivosha.habit_app.presentation.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -14,7 +13,6 @@ import androidx.navigation.navArgument
 import com.stivosha.habit_app.presentation.HabitViewModel
 import com.stivosha.habit_app.presentation.composable.screen.AddEditHabitScreen
 import com.stivosha.habit_app.presentation.composable.screen.HabitsScreen
-import com.stivosha.habit_app.presentation.model.Habit
 
 @Composable
 fun MyApp(navController: NavHostController) {
