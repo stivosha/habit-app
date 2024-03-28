@@ -34,7 +34,7 @@ fun AddEditHabitScreen(
     addHabit: (Habit) -> Unit,
     habitExtras: Habit? = null
 ) {
-    val habit = rememberSaveable { mutableStateOf(habitExtras ?: Habit()) }
+    val (habit, onHabitChanged) = rememberSaveable { mutableStateOf(habitExtras ?: Habit()) }
     var nameFieldError by remember { mutableStateOf(false) }
     var descriptionFieldError by remember { mutableStateOf(false) }
     Column(
@@ -48,10 +48,10 @@ fun AddEditHabitScreen(
             titleRes = R.string.add_habit_title_name_description
         ) {
             OutlinedTextField(
-                value = habit.value.name,
+                value = habit.name,
                 onValueChange = { text ->
                     nameFieldError = text.isEmpty()
-                    habit.value = habit.value.copy(name = text)
+                    onHabitChanged(habit.copy(name = text))
                 },
                 supportingText = {
                     if (nameFieldError) {
@@ -65,10 +65,10 @@ fun AddEditHabitScreen(
                 isError = nameFieldError
             )
             OutlinedTextField(
-                value = habit.value.description,
+                value = habit.description,
                 onValueChange = { text ->
                     descriptionFieldError = text.isEmpty()
-                    habit.value = habit.value.copy(description = text)
+                    onHabitChanged(habit.copy(description = text))
                 },
                 supportingText = {
                     if (descriptionFieldError) {
@@ -85,28 +85,28 @@ fun AddEditHabitScreen(
         AddHabitElevatedCard(
             titleRes = R.string.add_habit_title_priority
         ) {
-            PriorityExposedDropdown(habit)
+            PriorityExposedDropdown(habit, onHabitChanged)
         }
         AddHabitElevatedCard(
             titleRes = R.string.add_habit_title_type
         ) {
-            TypeRadioButtonGroup(habit)
+            TypeRadioButtonGroup(habit, onHabitChanged)
         }
         AddHabitElevatedCard(
             titleRes = R.string.add_habit_title_periodicity
         ) {
-            PeriodicityTextField(habit)
+            PeriodicityTextField(habit, onHabitChanged)
         }
         AddHabitElevatedCard(
             titleRes = R.string.add_habit_title_color
         ) {
-            ColorPickerGroup(habit)
+            ColorPickerGroup(habit, onHabitChanged)
         }
         Button(onClick = {
-            nameFieldError = habit.value.name.isEmpty()
-            descriptionFieldError = habit.value.description.isEmpty()
+            nameFieldError = habit.name.isEmpty()
+            descriptionFieldError = habit.description.isEmpty()
             if (!nameFieldError && !descriptionFieldError) {
-                addHabit(habit.value)
+                addHabit(habit)
             }
         }) {
             val buttonTitleRes = if (habitExtras == null) {

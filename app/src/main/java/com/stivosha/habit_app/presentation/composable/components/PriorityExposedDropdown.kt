@@ -21,7 +21,8 @@ import com.stivosha.habit_app.presentation.model.Priority
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PriorityExposedDropdown(
-    habit: MutableState<Habit>
+    habit: Habit,
+    habitChanged: (Habit) -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
@@ -30,7 +31,7 @@ fun PriorityExposedDropdown(
     ) {
         TextField(
             value = stringResource(
-                when (habit.value.priority) {
+                when (habit.priority) {
                     Priority.HIGH -> R.string.add_habit_high_priority
                     Priority.MEDIUM -> R.string.add_habit_medium_priority
                     Priority.LOW -> R.string.add_habit_low_priority
@@ -50,21 +51,21 @@ fun PriorityExposedDropdown(
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.add_habit_high_priority)) },
                 onClick = {
-                    habit.value = habit.value.copy(priority = Priority.HIGH)
+                    habitChanged(habit.copy(priority = Priority.HIGH))
                     isExpanded = false
                 }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.add_habit_medium_priority)) },
                 onClick = {
-                    habit.value = habit.value.copy(priority = Priority.MEDIUM)
+                    habitChanged(habit.copy(priority = Priority.MEDIUM))
                     isExpanded = false
                 }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.add_habit_low_priority)) },
                 onClick = {
-                    habit.value = habit.value.copy(priority = Priority.LOW)
+                    habitChanged(habit.copy(priority = Priority.LOW))
                     isExpanded = false
                 }
             )

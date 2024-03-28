@@ -31,27 +31,28 @@ import com.stivosha.habit_app.ui.theme.HabitappTheme
 
 @Composable
 fun PeriodicityTextField(
-    habit: MutableState<Habit>
+    habit: Habit,
+    habitChanged: (Habit) -> Unit
 ) {
     Row {
         Text(stringResource(R.string.periodicity_text_part1))
         NumberTextField(
-            value = if (habit.value.times == null) "" else habit.value.times.toString(),
+            value = if (habit.times == null) "" else habit.times.toString(),
             onValueChange = {
                 if (it.length <= 2) {
                     if (it.isNotBlank()) {
-                        habit.value = habit.value.copy(times = it.toInt())
+                        habitChanged(habit.copy(times = it.toInt()))
                     }
                 }
             }
         )
         Text(stringResource(R.string.periodicity_text_part2))
         NumberTextField(
-            value = if (habit.value.period == null) "" else habit.value.period.toString(),
+            value = if (habit.period == null) "" else habit.period.toString(),
             onValueChange = {
                 if (it.length <= 2) {
                     if (it.isNotBlank()) {
-                        habit.value = habit.value.copy(period = it.toInt())
+                        habitChanged(habit.copy(period = it.toInt()))
                     }
                 }
             }
@@ -95,13 +96,4 @@ private fun isDarkTheme(context: Context): Boolean {
     val currentNightMode =
         context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
     return currentNightMode == Configuration.UI_MODE_NIGHT_YES
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PeriodicityTextFieldPreview() {
-    val state = remember { mutableStateOf(Habit()) }
-    HabitappTheme {
-        PeriodicityTextField(state)
-    }
 }

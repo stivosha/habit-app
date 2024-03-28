@@ -20,15 +20,16 @@ import com.stivosha.habit_app.presentation.model.Type.GOOD
 
 @Composable
 fun TypeRadioButtonGroup(
-    habit: MutableState<Habit>,
+    habit: Habit,
+    habitChanged: (Habit) -> Unit
 ) {
     Column(Modifier.selectableGroup()) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             RadioButton(
-                selected = habit.value.type == GOOD,
-                onClick = { habit.value = habit.value.copy(type = GOOD) }
+                selected = habit.type == GOOD,
+                onClick = { habitChanged(habit.copy(type = GOOD)) }
             )
             Text(stringResource(R.string.add_habit_good_type))
         }
@@ -36,17 +37,10 @@ fun TypeRadioButtonGroup(
             verticalAlignment = Alignment.CenterVertically
         ) {
             RadioButton(
-                selected = habit.value.type == BAD,
-                onClick = { habit.value = habit.value.copy(type = BAD) }
+                selected = habit.type == BAD,
+                onClick = { habitChanged(habit.copy(type = BAD)) }
             )
             Text(stringResource(R.string.add_habit_bad_type))
         }
     }
-}
-
-@Preview
-@Composable
-fun Preview() {
-    val state = remember { mutableStateOf(Habit()) }
-    TypeRadioButtonGroup(state)
 }

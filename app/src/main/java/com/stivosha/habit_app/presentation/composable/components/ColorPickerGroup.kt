@@ -22,14 +22,15 @@ import com.stivosha.habit_app.presentation.model.Habit
 
 @Composable
 fun ColorPickerGroup(
-    habit: MutableState<Habit>
+    habit: Habit,
+    habitChanged: (Habit) -> Unit
 ) {
     val colors = listOf(
         0xFFFF0000,
         0xFF00FF00,
         0xFF0000FF
     )
-    val active = remember { mutableLongStateOf(habit.value.color) }
+    val active = remember { mutableLongStateOf(habit.color) }
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -43,17 +44,10 @@ fun ColorPickerGroup(
                     .border(BorderStroke(1.dp, borderColor))
                     .clickable
                     {
-                        habit.value = habit.value.copy(color = hex)
+                        habitChanged(habit.copy(color = hex))
                         active.longValue = hex
                     },
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewColorPickerGroup() {
-    val state = remember { mutableStateOf(Habit()) }
-    ColorPickerGroup(state)
 }

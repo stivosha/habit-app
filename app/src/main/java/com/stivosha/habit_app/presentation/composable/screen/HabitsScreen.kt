@@ -1,5 +1,6 @@
 package com.stivosha.habit_app.presentation.composable.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,9 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -30,6 +33,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -61,6 +66,12 @@ fun HabitsScreen(
     val navigationState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedDrawerIndex by rememberSaveable { mutableIntStateOf(0) }
+    val badHabits = remember(viewModel.items) {
+        viewModel.items.filter { it.type == Type.BAD }
+    }
+    val goodHabits = remember(viewModel.items) {
+        viewModel.items.filter { it.type == Type.GOOD }
+    }
 
     Surface {
         ModalNavigationDrawer(
@@ -96,6 +107,7 @@ fun HabitsScreen(
                         }
                     }
                 )
+
                 if (selectedDrawerIndex == 0) {
                     TabRow(selectedTabIndex = tabIndex) {
                         tabs.forEachIndexed { index, title ->
@@ -107,13 +119,13 @@ fun HabitsScreen(
                     }
                     when (tabIndex) {
                         0 -> HabitsContent(
-                            viewModel.items.filter { it.type == Type.GOOD },
+                            goodHabits,
                             onHabitClicked,
                             onFabClicked
                         )
 
                         1 -> HabitsContent(
-                            viewModel.items.filter { it.type == Type.BAD },
+                            badHabits,
                             onHabitClicked,
                             onFabClicked
                         )
@@ -155,13 +167,14 @@ fun HabitsContent(
                 .padding(padding),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            habits.forEach {
-                item {
-                    HabitItem(
-                        item = it,
-                        onItemClick = onHabitClicked
-                    )
-                }
+            items(
+                items = habits,
+                key = { it.id }
+            ) {
+                HabitItem(
+                    item = it,
+                    onItemClick = onHabitClicked
+                )
             }
         }
     }

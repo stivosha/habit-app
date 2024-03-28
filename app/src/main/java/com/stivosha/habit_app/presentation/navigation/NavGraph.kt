@@ -23,18 +23,17 @@ fun MyApp(navController: NavHostController) {
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }
     ) {
-        habitScreen(habitViewModel, navController, this)
-        addHabitScreen(habitViewModel, navController, this)
-        editHabitScreen(habitViewModel, navController, this)
+        habitScreen(habitViewModel, navController)
+        addHabitScreen(habitViewModel, navController)
+        editHabitScreen(habitViewModel, navController)
     }
 }
 
-private fun habitScreen(
+private fun NavGraphBuilder.habitScreen(
     habitViewModel: HabitViewModel,
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
+    navController: NavHostController
 ) {
-    navGraphBuilder.composable(route = NavRoute.HabitsList.path) {
+    composable(route = NavRoute.HabitsList.path) {
         HabitsScreen(
             viewModel = habitViewModel,
             onHabitClicked = {
@@ -47,12 +46,11 @@ private fun habitScreen(
     }
 }
 
-private fun addHabitScreen(
+private fun NavGraphBuilder.addHabitScreen(
     habitViewModel: HabitViewModel,
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
+    navController: NavHostController
 ) {
-    navGraphBuilder.composable(route = NavRoute.AddHabit.path) {
+    composable(route = NavRoute.AddHabit.path) {
         AddEditHabitScreen(
             addHabit = {
                 habitViewModel.addHabit(it)
@@ -62,12 +60,11 @@ private fun addHabitScreen(
     }
 }
 
-private fun editHabitScreen(
+private fun NavGraphBuilder.editHabitScreen(
     habitViewModel: HabitViewModel,
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
+    navController: NavHostController
 ) {
-    navGraphBuilder.composable(
+    composable(
         route = NavRoute.EditHabit.path,
         arguments = listOf(navArgument("habitId") { type = NavType.LongType })
     ) { backStackEntry ->
