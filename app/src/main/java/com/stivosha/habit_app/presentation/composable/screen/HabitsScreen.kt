@@ -61,6 +61,7 @@ fun HabitsScreen(
     val navigationState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedDrawerIndex by rememberSaveable { mutableIntStateOf(0) }
+
     Surface {
         ModalNavigationDrawer(
             drawerContent = {
