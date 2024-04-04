@@ -18,23 +18,26 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stivosha.habit_app.R
+import com.stivosha.habit_app.presentation.EditHabitViewModel
 import com.stivosha.habit_app.presentation.composable.components.AddHabitElevatedCard
 import com.stivosha.habit_app.presentation.composable.components.ColorPickerGroup
 import com.stivosha.habit_app.presentation.composable.components.PeriodicityTextField
 import com.stivosha.habit_app.presentation.composable.components.PriorityExposedDropdown
 import com.stivosha.habit_app.presentation.composable.components.TypeRadioButtonGroup
 import com.stivosha.habit_app.presentation.model.Habit
-import com.stivosha.habit_app.ui.theme.HabitappTheme
 
 @Composable
 fun AddEditHabitScreen(
-    addHabit: (Habit) -> Unit,
-    habitExtras: Habit? = null
+    editHabitViewModel: EditHabitViewModel,
+    closeScreen: (Habit) -> Unit,
+    habitId: Long? = null
 ) {
-    val (habit, onHabitChanged) = rememberSaveable { mutableStateOf(habitExtras ?: Habit()) }
+    val habitExtras = editHabitViewModel.getHabitById(habitId)
+    val (habit, onHabitChanged) = rememberSaveable {
+        mutableStateOf(habitExtras ?: Habit())
+    }
     var nameFieldError by remember { mutableStateOf(false) }
     var descriptionFieldError by remember { mutableStateOf(false) }
     Column(
@@ -106,7 +109,12 @@ fun AddEditHabitScreen(
             nameFieldError = habit.name.isEmpty()
             descriptionFieldError = habit.description.isEmpty()
             if (!nameFieldError && !descriptionFieldError) {
-                addHabit(habit)
+                if (habitExtras == null) {
+                    editHabitViewModel.addHabit(habit)
+                } else {
+                    editHabitViewModel.editHabit(habitId, habit)
+                }
+                closeScreen(habit)
             }
         }) {
             val buttonTitleRes = if (habitExtras == null) {
@@ -116,13 +124,5 @@ fun AddEditHabitScreen(
             }
             Text(stringResource(buttonTitleRes))
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AddHabitScreenPreview() {
-    HabitappTheme {
-        AddEditHabitScreen({})
     }
 }

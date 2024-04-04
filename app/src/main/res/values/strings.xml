@@ -15,8 +15,11 @@
     <string name="add_habit_low_priority">Низкий</string>
     <string name="add_habit_good_type">Хорошая</string>
     <string name="add_habit_bad_type">Плохая</string>
+
     <string name="habit_screen_title">Привычки</string>
     <string name="info_screen_title">Инфо</string>
+
+    <string name="habit_filter_filter_by_name">Отфильтровать по названию</string>
 
     <string name="periodicity_text_part1">Повторять\u0020</string>
     <string name="periodicity_text_part2">\u0020раз в\u0020</string>
