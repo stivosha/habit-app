@@ -2,7 +2,9 @@ package com.stivosha.habit_app.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stivosha.habit_app.App
 import com.stivosha.habit_app.data.HabitData
+import com.stivosha.habit_app.data.HabitRepositoryImpl
 import com.stivosha.habit_app.data.filter.FilterByName
 import com.stivosha.habit_app.data.filter.HabitFilter
 import com.stivosha.habit_app.presentation.model.Habit
@@ -11,15 +13,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HabitsViewModel : ViewModel() {
+class HabitsViewModel: ViewModel() {
 
+    private var repository: HabitRepositoryImpl = App.repository
     private val _filters = mutableSetOf<HabitFilter>()
-    private val _habits = MutableStateFlow(HabitData.getHabits())
+    private val _habits = MutableStateFlow(emptyList<Habit>())
     val habits: StateFlow<List<Habit>> = _habits.asStateFlow()
 
     fun fetchData() {
         viewModelScope.launch {
-            _habits.value = HabitData
+            _habits.value = repository
                 .getHabits()
                 .filter { habit ->
                     _filters.isEmpty() || _filters.any { filter -> filter.invoke(habit) }

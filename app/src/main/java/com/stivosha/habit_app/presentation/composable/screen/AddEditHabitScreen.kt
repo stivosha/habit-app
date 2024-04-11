@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.stivosha.habit_app.R
 import com.stivosha.habit_app.presentation.EditHabitViewModel
 import com.stivosha.habit_app.presentation.composable.components.AddHabitElevatedCard
@@ -27,6 +29,7 @@ import com.stivosha.habit_app.presentation.composable.components.PeriodicityText
 import com.stivosha.habit_app.presentation.composable.components.PriorityExposedDropdown
 import com.stivosha.habit_app.presentation.composable.components.TypeRadioButtonGroup
 import com.stivosha.habit_app.presentation.model.Habit
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddEditHabitScreen(
@@ -34,9 +37,13 @@ fun AddEditHabitScreen(
     closeScreen: (Habit) -> Unit,
     habitId: Long? = null
 ) {
-    val habitExtras = editHabitViewModel.getHabitById(habitId)
     val (habit, onHabitChanged) = rememberSaveable {
-        mutableStateOf(habitExtras ?: Habit())
+        mutableStateOf(Habit())
+    }
+    LaunchedEffect(Unit) {
+        editHabitViewModel.getHabitById(habitId)?.let {
+            onHabitChanged(it)
+        }
     }
     var nameFieldError by remember { mutableStateOf(false) }
     var descriptionFieldError by remember { mutableStateOf(false) }
@@ -109,15 +116,17 @@ fun AddEditHabitScreen(
             nameFieldError = habit.name.isEmpty()
             descriptionFieldError = habit.description.isEmpty()
             if (!nameFieldError && !descriptionFieldError) {
-                if (habitExtras == null) {
-                    editHabitViewModel.addHabit(habit)
-                } else {
-                    editHabitViewModel.editHabit(habitId, habit)
+                editHabitViewModel.viewModelScope.launch {
+                    if (habit.id != habitId) {
+                        editHabitViewModel.addHabit(habit)
+                    } else {
+                        editHabitViewModel.editHabit(habitId, habit)
+                    }
                 }
                 closeScreen(habit)
             }
         }) {
-            val buttonTitleRes = if (habitExtras == null) {
+            val buttonTitleRes = if (habit.id != habitId) {
                 R.string.add_habit_title_button
             } else {
                 R.string.edit_habit_title_button

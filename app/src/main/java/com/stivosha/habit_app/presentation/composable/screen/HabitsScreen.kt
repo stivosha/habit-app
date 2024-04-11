@@ -221,10 +221,7 @@ fun HabitsContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(16.dp)
         ) {
-            items(
-                items = habits,
-                key = { it.id }
-            ) {
+            items(items = habits) {
                 HabitItem(
                     item = it,
                     onItemClick = onHabitClicked
