@@ -1,5 +1,7 @@
 package com.stivosha.habit_app.presentation.composable.screen
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
@@ -29,19 +32,20 @@ import com.stivosha.habit_app.presentation.composable.components.PeriodicityText
 import com.stivosha.habit_app.presentation.composable.components.PriorityExposedDropdown
 import com.stivosha.habit_app.presentation.composable.components.TypeRadioButtonGroup
 import com.stivosha.habit_app.presentation.model.Habit
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 @Composable
 fun AddEditHabitScreen(
     editHabitViewModel: EditHabitViewModel,
     closeScreen: (Habit) -> Unit,
-    habitId: Long? = null
+    habitUid: String? = null
 ) {
     val (habit, onHabitChanged) = rememberSaveable {
-        mutableStateOf(Habit())
+        mutableStateOf(Habit(uid = "temp"))
     }
     LaunchedEffect(Unit) {
-        editHabitViewModel.getHabitById(habitId)?.let {
+        editHabitViewModel.getHabitById(habitUid)?.let {
             onHabitChanged(it)
         }
     }
@@ -112,21 +116,26 @@ fun AddEditHabitScreen(
         ) {
             ColorPickerGroup(habit, onHabitChanged)
         }
+        val context = LocalContext.current
         Button(onClick = {
             nameFieldError = habit.name.isEmpty()
             descriptionFieldError = habit.description.isEmpty()
             if (!nameFieldError && !descriptionFieldError) {
                 editHabitViewModel.viewModelScope.launch {
-                    if (habit.id != habitId) {
-                        editHabitViewModel.addHabit(habit)
+                    if (habit.uid != habitUid) {
+                        editHabitViewModel.addHabit(habit).catch {
+                            showError(context, context.getString(R.string.edit_habit_error_add))
+                        }
                     } else {
-                        editHabitViewModel.editHabit(habitId, habit)
+                        editHabitViewModel.editHabit(habit).catch {
+                            showError(context, context.getString(R.string.edit_habit_error_edit))
+                        }
                     }
                 }
                 closeScreen(habit)
             }
         }) {
-            val buttonTitleRes = if (habit.id != habitId) {
+            val buttonTitleRes = if (habit.uid != habitUid) {
                 R.string.add_habit_title_button
             } else {
                 R.string.edit_habit_title_button
@@ -134,4 +143,8 @@ fun AddEditHabitScreen(
             Text(stringResource(buttonTitleRes))
         }
     }
+}
+
+private fun showError(context: Context, text: String) {
+    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 }

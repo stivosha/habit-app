@@ -21,6 +21,9 @@
 
     <string name="habit_filter_filter_by_name">Отфильтровать по названию</string>
 
+    <string name="edit_habit_error_edit">Не удалось изменить привычку</string>
+    <string name="edit_habit_error_add">Не удалось добавить привычку</string>
+
     <string name="periodicity_text_part1">Повторять\u0020</string>
     <string name="periodicity_text_part2">\u0020раз в\u0020</string>
     <string name="periodicity_text_part3">\u0020дней</string>

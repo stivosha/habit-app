@@ -61,5 +61,5 @@ fun HabitItem(
 @Preview(showBackground = true)
 @Composable
 fun PreviewHabitItem() {
-    HabitItem(Habit(0, "Чилл"), {})
+    HabitItem(Habit("temp", "Чилл"), {})
 }

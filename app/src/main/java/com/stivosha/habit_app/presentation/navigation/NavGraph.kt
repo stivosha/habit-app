@@ -69,9 +69,9 @@ private fun NavGraphBuilder.editHabitScreen(
 ) {
     composable(
         route = NavRoute.EditHabit.path,
-        arguments = listOf(navArgument("habitId") { type = NavType.LongType })
+        arguments = listOf(navArgument("habitId") { type = NavType.StringType })
     ) { backStackEntry ->
-        val habitId = backStackEntry.arguments?.getLong("habitId")
+        val habitId = backStackEntry.arguments?.getString("habitId")
         AddEditHabitScreen(
             editHabitViewModel,
             closeScreen = { navController.popBackStack() },

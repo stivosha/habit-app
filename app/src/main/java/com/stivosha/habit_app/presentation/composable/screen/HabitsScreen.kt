@@ -1,9 +1,9 @@
 package com.stivosha.habit_app.presentation.composable.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,14 +11,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,7 +31,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -51,6 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,6 +56,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stivosha.habit_app.R
+import com.stivosha.habit_app.presentation.HabitsState
+import com.stivosha.habit_app.presentation.HabitsState.Data
 import com.stivosha.habit_app.presentation.HabitsViewModel
 import com.stivosha.habit_app.presentation.composable.components.HabitItem
 import com.stivosha.habit_app.presentation.model.Habit
@@ -81,32 +80,22 @@ fun HabitsScreen(
     val navigationState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedDrawerIndex by rememberSaveable { mutableIntStateOf(0) }
-    val habits by viewModel.habits.collectAsState()
+    val state by viewModel.state.collectAsState()
 
     val lifecycleOwner = rememberUpdatedState(newValue = LocalLifecycleOwner.current)
     DisposableEffect(lifecycleOwner) {
         val lifecycle = lifecycleOwner.value.lifecycle
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_RESUME -> viewModel.fetchData()
+                Lifecycle.Event.ON_START -> viewModel.fetchData()
                 else -> {}
             }
         }
-
         lifecycle.addObserver(observer)
-
         onDispose {
             lifecycle.removeObserver(observer)
         }
     }
-
-    val badHabits = remember(habits) {
-        habits.filter { it.type == Type.BAD }
-    }
-    val goodHabits = remember(habits) {
-        habits.filter { it.type == Type.GOOD }
-    }
-
     Surface {
         ModalNavigationDrawer(
             drawerContent = {
@@ -156,23 +145,47 @@ fun HabitsScreen(
                         viewModel.addFilter(name)
                     }
 
-                    when (tabIndex) {
-                        0 -> HabitsContent(
-                            scope,
-                            goodHabits,
-                            onHabitClicked,
-                            onFabClicked,
-                            applyFilter
-                        )
+                    when (val _state = state) {
+                        is Data -> {
+                            if (_state.errorText != null) {
+                                Toast.makeText(
+                                    LocalContext.current,
+                                    _state.errorText,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            val badHabits = remember(_state) {
+                                _state.habits?.filter { it.type == Type.BAD }
+                            }
+                            val goodHabits = remember(_state) {
+                                _state.habits?.filter { it.type == Type.GOOD }
+                            }
+                            when (tabIndex) {
+                                0 -> goodHabits?.let {
+                                    HabitsContent(
+                                        scope,
+                                        it,
+                                        onHabitClicked,
+                                        onFabClicked,
+                                        applyFilter
+                                    )
+                                }
 
-                        1 -> HabitsContent(
-                            scope,
-                            badHabits,
-                            onHabitClicked,
-                            onFabClicked,
-                            applyFilter
-                        )
+                                1 -> badHabits?.let {
+                                    HabitsContent(
+                                        scope,
+                                        it,
+                                        onHabitClicked,
+                                        onFabClicked,
+                                        applyFilter
+                                    )
+                                }
+                            }
+                        }
+                        HabitsState.Loading -> {}           // можно как-то лоадинг отобразить
                     }
+
+
                 } else {
                     Column(
                         modifier = Modifier.fillMaxSize(),

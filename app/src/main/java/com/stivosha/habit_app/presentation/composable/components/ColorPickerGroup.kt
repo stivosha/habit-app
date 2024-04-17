@@ -30,23 +30,18 @@ fun ColorPickerGroup(
         0xFF00FF00,
         0xFF0000FF
     )
-    val active = remember { mutableLongStateOf(habit.color) }
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         val primary = MaterialTheme.colorScheme.primary
         colors.forEach { hex ->
-            val borderColor = if (hex == active.longValue) primary else Color.Transparent
+            val borderColor = if (hex == habit.color) primary else Color.Transparent
             Box(
                 modifier = Modifier
                     .size(16.dp)
                     .background(Color(hex))
                     .border(BorderStroke(1.dp, borderColor))
-                    .clickable
-                    {
-                        habitChanged(habit.copy(color = hex))
-                        active.longValue = hex
-                    },
+                    .clickable { habitChanged(habit.copy(color = hex)) },
             )
         }
     }
