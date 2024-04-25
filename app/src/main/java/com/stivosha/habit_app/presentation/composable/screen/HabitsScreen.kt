@@ -55,13 +55,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.stivosha.domain.Habit
+import com.stivosha.domain.Type
+import com.stivosha.domain.Type.BAD
+import com.stivosha.domain.Type.GOOD
 import com.stivosha.habit_app.R
 import com.stivosha.habit_app.presentation.HabitsState
 import com.stivosha.habit_app.presentation.HabitsState.Data
 import com.stivosha.habit_app.presentation.HabitsViewModel
 import com.stivosha.habit_app.presentation.composable.components.HabitItem
-import com.stivosha.habit_app.presentation.model.Habit
-import com.stivosha.habit_app.presentation.model.Type
 import com.stivosha.habit_app.ui.theme.HabitappTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -87,7 +89,7 @@ fun HabitsScreen(
         val lifecycle = lifecycleOwner.value.lifecycle
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_START -> viewModel.fetchData()
+                Lifecycle.Event.ON_RESUME -> viewModel.fetchData()
                 else -> {}
             }
         }
@@ -145,20 +147,20 @@ fun HabitsScreen(
                         viewModel.addFilter(name)
                     }
 
-                    when (val _state = state) {
+                    when (val habitState = state) {
                         is Data -> {
-                            if (_state.errorText != null) {
+                            if (habitState.errorText != null) {
                                 Toast.makeText(
                                     LocalContext.current,
-                                    _state.errorText,
+                                    habitState.errorText,
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
-                            val badHabits = remember(_state) {
-                                _state.habits?.filter { it.type == Type.BAD }
+                            val badHabits = remember(habitState.habits) {
+                                habitState.habits?.filter { it.type == BAD }
                             }
-                            val goodHabits = remember(_state) {
-                                _state.habits?.filter { it.type == Type.GOOD }
+                            val goodHabits = remember(habitState.habits) {
+                                habitState.habits?.filter { it.type == GOOD }
                             }
                             when (tabIndex) {
                                 0 -> goodHabits?.let {

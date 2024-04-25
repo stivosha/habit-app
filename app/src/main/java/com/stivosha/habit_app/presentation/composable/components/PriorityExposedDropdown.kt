@@ -7,16 +7,17 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.stivosha.domain.Habit
+import com.stivosha.domain.Priority.HIGH
+import com.stivosha.domain.Priority.LOW
+import com.stivosha.domain.Priority.MEDIUM
 import com.stivosha.habit_app.R
-import com.stivosha.habit_app.presentation.model.Habit
-import com.stivosha.habit_app.presentation.model.Priority
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,9 +33,9 @@ fun PriorityExposedDropdown(
         TextField(
             value = stringResource(
                 when (habit.priority) {
-                    Priority.HIGH -> R.string.add_habit_high_priority
-                    Priority.MEDIUM -> R.string.add_habit_medium_priority
-                    Priority.LOW -> R.string.add_habit_low_priority
+                    HIGH -> R.string.add_habit_high_priority
+                    MEDIUM -> R.string.add_habit_medium_priority
+                    LOW -> R.string.add_habit_low_priority
                 }
             ),
             onValueChange = {},
@@ -51,21 +52,21 @@ fun PriorityExposedDropdown(
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.add_habit_high_priority)) },
                 onClick = {
-                    habitChanged(habit.copy(priority = Priority.HIGH))
+                    habitChanged(habit.copy(priority = HIGH))
                     isExpanded = false
                 }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.add_habit_medium_priority)) },
                 onClick = {
-                    habitChanged(habit.copy(priority = Priority.MEDIUM))
+                    habitChanged(habit.copy(priority = MEDIUM))
                     isExpanded = false
                 }
             )
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.add_habit_low_priority)) },
                 onClick = {
-                    habitChanged(habit.copy(priority = Priority.LOW))
+                    habitChanged(habit.copy(priority = LOW))
                     isExpanded = false
                 }
             )

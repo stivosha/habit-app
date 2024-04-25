@@ -1,6 +1,6 @@
 package com.stivosha.habit_app.presentation.navigation
 
-import com.stivosha.habit_app.presentation.model.Habit
+import com.stivosha.domain.Habit
 
 sealed class NavRoute(val path: String) {
     data object HabitsList : NavRoute("habit")

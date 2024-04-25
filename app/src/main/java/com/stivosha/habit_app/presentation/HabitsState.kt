@@ -1,6 +1,6 @@
 package com.stivosha.habit_app.presentation
 
-import com.stivosha.habit_app.presentation.model.Habit
+import com.stivosha.domain.Habit
 
 sealed class HabitsState {
     data object Loading : HabitsState()

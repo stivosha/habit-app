@@ -1,31 +1,30 @@
-package com.stivosha.habit_app.data.db
+package com.stivosha.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.stivosha.habit_app.presentation.model.Habit
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabitDao {
 
     @Query("SELECT * FROM habits")
-    fun getAll(): Flow<List<Habit>>
+    fun getAll(): Flow<List<HabitDbEntity>>
 
     @Query("SELECT * FROM habits WHERE uid=:uid")
-    suspend fun getById(uid: String): Habit
+    suspend fun getById(uid: String): HabitDbEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(habit: Habit)
+    suspend fun insert(habit: HabitDbEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg habits: Habit)
+    suspend fun insertAll(vararg habits: HabitDbEntity)
 
     @Query("DELETE FROM habits")
     suspend fun deleteAll()
 
     @Update
-    suspend fun update(habit: Habit)
+    suspend fun update(habit: HabitDbEntity)
 }

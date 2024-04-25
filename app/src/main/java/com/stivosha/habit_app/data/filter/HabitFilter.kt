@@ -1,6 +1,6 @@
 package com.stivosha.habit_app.data.filter
 
-import com.stivosha.habit_app.presentation.model.Habit
+import com.stivosha.domain.Habit
 
 fun interface HabitFilter {
     fun invoke(habit: Habit): Boolean

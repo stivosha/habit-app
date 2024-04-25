@@ -1,20 +1,18 @@
 package com.stivosha.habit_app.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stivosha.habit_app.App
-import com.stivosha.habit_app.data.HabitRepositoryImpl
-import com.stivosha.habit_app.presentation.model.Habit
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
+import com.stivosha.domain.Habit
+import com.stivosha.domain.HabitRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
+import javax.inject.Inject
 
-class EditHabitViewModel : ViewModel() {
-
-    private var repository: HabitRepositoryImpl = App.repository
-
-    suspend fun addHabit(habit: Habit) = repository.insert(habit)
+@HiltViewModel
+class EditHabitViewModel @Inject constructor(
+    private val repository: HabitRepository
+) : ViewModel() {
+    fun addHabit(habit: Habit) = repository.insert(habit)
 
     fun editHabit(habit: Habit) = repository.edit(habit)
 
