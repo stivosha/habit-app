@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -98,7 +99,9 @@ fun HabitsScreen(
             lifecycle.removeObserver(observer)
         }
     }
-    Surface {
+    Surface(
+        modifier = Modifier.testTag("MainScreen")
+    ) {
         ModalNavigationDrawer(
             drawerContent = {
                 ModalDrawerSheet {
@@ -221,7 +224,8 @@ fun HabitsContent(
                 },
                 floatingActionButton = {
                     FloatingActionButton(
-                        onClick = onFabClicked
+                        onClick = onFabClicked,
+                        modifier = Modifier.testTag("MainScreenAdd")
                     ) {
                         Icon(Icons.Filled.Add, "Open create habit screen")
                     }

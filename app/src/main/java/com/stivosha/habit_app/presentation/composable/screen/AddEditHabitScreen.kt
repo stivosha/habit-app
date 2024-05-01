@@ -21,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelStore
@@ -60,7 +61,8 @@ fun AddEditHabitScreen(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(20.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .testTag("AddScreen"),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         AddHabitElevatedCard(
@@ -81,7 +83,8 @@ fun AddEditHabitScreen(
                     }
                 },
                 label = { Text(stringResource(R.string.add_habit_title_name)) },
-                isError = nameFieldError
+                isError = nameFieldError,
+                modifier = Modifier.testTag("titleAddScreen")
             )
             OutlinedTextField(
                 value = habit.description,
@@ -98,7 +101,8 @@ fun AddEditHabitScreen(
                     }
                 },
                 label = { Text(stringResource(R.string.add_habit_title_description)) },
-                isError = descriptionFieldError
+                isError = descriptionFieldError,
+                modifier = Modifier.testTag("descriptionAddScreen")
             )
         }
         AddHabitElevatedCard(
@@ -122,23 +126,26 @@ fun AddEditHabitScreen(
             ColorPickerGroup(habit, onHabitChanged)
         }
         val context = LocalContext.current
-        Button(onClick = {
-            nameFieldError = habit.name.isEmpty()
-            descriptionFieldError = habit.description.isEmpty()
-            if (!nameFieldError && !descriptionFieldError) {
-                val request = if (habit.uid != habitUid)
-                    editHabitViewModel.addHabit(habit)
-                else
-                    editHabitViewModel.editHabit(habit)
-                val errorText =
-                    if (habit.uid != habitUid) R.string.edit_habit_error_add else R.string.edit_habit_error_edit
-                request.catch {
-                    showError(context, context.getString(errorText))
-                }.onCompletion {
-                    closeScreen(habit)
-                }.launchIn(editHabitViewModel.viewModelScope)
-            }
-        }) {
+        Button(
+            onClick = {
+                nameFieldError = habit.name.isEmpty()
+                descriptionFieldError = habit.description.isEmpty()
+                if (!nameFieldError && !descriptionFieldError) {
+                    val request = if (habit.uid != habitUid)
+                        editHabitViewModel.addHabit(habit)
+                    else
+                        editHabitViewModel.editHabit(habit)
+                    val errorText =
+                        if (habit.uid != habitUid) R.string.edit_habit_error_add else R.string.edit_habit_error_edit
+                    request.catch {
+                        showError(context, context.getString(errorText))
+                    }.onCompletion {
+                        closeScreen(habit)
+                    }.launchIn(editHabitViewModel.viewModelScope)
+                }
+            },
+            modifier = Modifier.testTag("addScreenAddButton")
+        ) {
             val buttonTitleRes = if (habit.uid != habitUid) {
                 R.string.add_habit_title_button
             } else {
